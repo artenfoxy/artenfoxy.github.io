@@ -1,0 +1,456 @@
+/**
+ * @name Cyberpunk 2077 — Night City
+ * @version 4.0.0
+ * @description Neon Drive: a magenta, violet and cyan Night City theme for Vencord.
+ * @author based on Nocturnal by w1zard & cruxie / cyberpunk remix
+ * @source https://github.com/xcruxiex/themes
+ */
+
+/* Imports must stay above every other CSS rule. */
+@import url("https://xcruxiex.github.io/themes/themes-cores/nocturnal.css");
+@import url("https://xcruxiex.github.io/themes/core/badges.css");
+@import url("https://xcruxiex.github.io/themes/core/custom-font.css");
+@import url("https://xcruxiex.github.io/themes/core/hljs.css");
+@import url("https://DiscordStyles.github.io/RadialStatus/RadialStatus.css");
+@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap");
+
+:root {
+  /* Theme core */
+  --mainColor: #ff3ec8;
+  --gradientColor01: #24e7ff;
+  --gradientColor02: #8255ff;
+  --backgroundColor01: #10132d;
+  --backgroundColor02: #070819;
+  --backgroundCode: #090b12;
+  --backgroundName: rgba(0, 0, 0, 0.38);
+  --linkcolor: #62f3ff;
+  --customFont: "Rajdhani", "gg sans", sans-serif;
+  --toggle-gradient: true;
+
+  /* Palette */
+  --cp-yellow: #ff3ec8;
+  --cp-cyan: #24e7ff;
+  --cp-pink: #ff2fa8;
+  --cp-red: #ff365f;
+  --cp-green: #00ff9f;
+  --cp-ink: #070817;
+  --cp-panel: rgba(8, 10, 32, 0.66);
+  --cp-panel-strong: rgba(8, 10, 30, 0.86);
+  --cp-line: rgba(36, 231, 255, 0.32);
+  --cp-muted-line: rgba(255, 255, 255, 0.08);
+  --cp-radius: 5px;
+
+  /* Radial Status */
+  --rs-small-spacing: 2px;
+  --rs-large-spacing: 3px;
+  --rs-width: 2px;
+  --rs-avatar-shape: 50%;
+  --rs-online-color: var(--cp-green);
+  --rs-phone-color: var(--cp-cyan);
+  --rs-idle-color: #a985ff;
+  --rs-dnd-color: var(--cp-red);
+  --rs-offline-color: #666874;
+  --rs-streaming-color: var(--cp-pink);
+  --rs-invisible-color: #777986;
+  --rs-phone-visible: block;
+}
+
+/* ---------- Foundation ---------- */
+
+html,
+body,
+#app-mount {
+  min-height: 100%;
+}
+
+body {
+  background:
+    linear-gradient(180deg, rgba(5, 7, 26, 0.2), rgba(9, 5, 29, 0.48)),
+    var(--nightcity-bg) center / cover fixed no-repeat !important;
+}
+
+#app-mount {
+  isolation: isolate;
+  background: transparent !important;
+  --background-primary: rgba(9, 11, 34, 0.7);
+  --background-secondary: rgba(8, 9, 29, 0.76);
+  --background-secondary-alt: rgba(7, 8, 25, 0.86);
+  --background-tertiary: rgba(6, 7, 23, 0.82);
+  --background-floating: rgba(8, 8, 28, 0.94);
+  --background-base-lowest: rgba(5, 6, 20, 0.88);
+  --background-base-lower: rgba(7, 8, 27, 0.8);
+  --background-base-low: rgba(9, 11, 34, 0.72);
+  --bg-base-primary: rgba(9, 11, 34, 0.7);
+  --bg-base-secondary: rgba(8, 9, 29, 0.76);
+  --bg-base-tertiary: rgba(6, 7, 23, 0.82);
+}
+
+/* Discord and Nocturnal both paint opaque root layers; make only those roots clear. */
+#app-mount > div,
+#app-mount [class^="app_"],
+#app-mount [class^="bg_"],
+#app-mount [class^="base_"],
+#app-mount [class^="content_"],
+#app-mount [class^="page_"] {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Rain and scanlines share one inexpensive, non-interactive overlay. */
+#app-mount::before {
+  content: "";
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.24;
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 240, 255, 0.035) 0,
+      rgba(0, 240, 255, 0.035) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    linear-gradient(105deg, transparent 0 47%, rgba(0, 240, 255, 0.12) 48%, transparent 49% 100%);
+  background-size: 100% 4px, 180px 900px;
+  animation: cp-rain 12s linear infinite;
+}
+
+/* Rare full-screen interference: mostly invisible, with short glitch bursts. */
+body::before {
+  content: "";
+  position: fixed;
+  z-index: 10002;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    linear-gradient(transparent 0 14%, rgba(36, 231, 255, 0.34) 14% 16%, transparent 16% 47%, rgba(255, 47, 168, 0.3) 47% 50%, transparent 50% 78%, rgba(130, 85, 255, 0.28) 78% 79%, transparent 79%),
+    repeating-linear-gradient(90deg, transparent 0 24px, rgba(255, 255, 255, 0.07) 25px, transparent 27px);
+  mix-blend-mode: screen;
+  animation: cp-screen-glitch 11s steps(1, end) infinite;
+}
+
+@keyframes cp-screen-glitch {
+  0%, 91%, 94%, 96%, 100% { opacity: 0; transform: translate(0); clip-path: inset(0); }
+  92% { opacity: 0.48; transform: translateX(-7px); clip-path: inset(9% 0 67% 0); }
+  92.4% { opacity: 0.34; transform: translateX(9px); clip-path: inset(44% 0 31% 0); filter: hue-rotate(85deg); }
+  92.8% { opacity: 0.42; transform: translateX(-3px); clip-path: inset(73% 0 8% 0); }
+  93.2% { opacity: 0.16; transform: translateX(2px); clip-path: inset(0); }
+  95% { opacity: 0.22; transform: translateX(4px); clip-path: inset(38% 0 54% 0); }
+}
+
+#app-mount::after {
+  content: "";
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 14% 22%, rgba(255, 47, 168, 0.16), transparent 34%),
+    radial-gradient(circle at 86% 72%, rgba(36, 231, 255, 0.14), transparent 38%),
+    linear-gradient(90deg, rgba(130, 85, 255, 0.07), transparent 24% 76%, rgba(255, 62, 200, 0.055));
+  box-shadow: inset 0 0 150px rgba(2, 3, 15, 0.5);
+}
+
+@keyframes cp-rain {
+  to { background-position: 0 0, 0 900px; }
+}
+
+::selection {
+  color: var(--cp-ink);
+  background: var(--cp-cyan);
+}
+
+/* Keep the wallpaper visible without making text difficult to read. */
+#app-mount [class*="sidebar_"],
+#app-mount [class*="members_"],
+#app-mount [class*="chatContent_"],
+#app-mount [class*="container_"][class*="guilds_"] {
+  background-color: var(--cp-panel) !important;
+  backdrop-filter: blur(10px) saturate(125%);
+}
+
+#app-mount [class*="panels_"],
+#app-mount [class*="channelTextArea_"],
+#app-mount [class*="container_"][class*="themed_"] {
+  background-color: var(--cp-panel-strong) !important;
+}
+
+/* ---------- Navigation ---------- */
+
+#app-mount [class*="modeSelected_"] {
+  background: linear-gradient(90deg, rgba(255, 62, 200, 0.22), rgba(36, 231, 255, 0.09), transparent) !important;
+  border-left: 3px solid var(--cp-yellow);
+  box-shadow: inset 18px 0 24px -24px var(--cp-yellow);
+}
+
+#app-mount [class*="modeSelected_"] [class*="name_"] {
+  color: var(--cp-yellow) !important;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(255, 62, 200, 0.5);
+}
+
+#app-mount [class*="modeUnread_"]:hover,
+#app-mount [class*="modeConnected_"]:hover {
+  background-color: rgba(0, 240, 255, 0.08) !important;
+  box-shadow: inset 2px 0 var(--cp-cyan);
+}
+
+#app-mount [class*="pill_"] span {
+  background: var(--cp-red) !important;
+  box-shadow: 0 0 8px rgba(255, 49, 91, 0.72);
+}
+
+/* Selected server: glow the icon without moving it. */
+#app-mount [class*="wrapper_"][class*="selected_"] [class*="childWrapper_"],
+#app-mount [class*="wrapper_"][class*="selected_"] [class*="icon_"] {
+  box-shadow: 0 0 0 1px var(--cp-yellow), 0 0 16px rgba(0, 240, 255, 0.58);
+}
+
+/* Keep Discord's standard home icon. */
+#app-mount [class*="homeIcon_"] svg {
+  display: block !important;
+}
+
+#app-mount [class*="homeIcon_"]::after {
+  content: none !important;
+}
+
+/* ---------- Messages ---------- */
+
+#app-mount [class*="messageListItem_"] [class*="message_"] {
+  border-left: 2px solid transparent;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+#app-mount [class*="messageListItem_"] [class*="message_"]:hover {
+  background: linear-gradient(90deg, rgba(255, 62, 200, 0.07), rgba(36, 231, 255, 0.04), transparent) !important;
+  border-left-color: rgba(0, 240, 255, 0.52);
+}
+
+#app-mount [class*="mentioned_"] {
+  background: linear-gradient(90deg, rgba(255, 62, 200, 0.16), rgba(130, 85, 255, 0.045)) !important;
+  border-left: 3px solid var(--cp-yellow) !important;
+}
+
+#app-mount [class*="mentioned_"]::before {
+  background-color: var(--cp-yellow) !important;
+}
+
+#app-mount [class*="messageContent_"] {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
+}
+
+/* Short glitch burst on hover; avoids continuously shaking readable text. */
+#app-mount [class*="message_"]:hover [class*="username_"] {
+  animation: cp-glitch 420ms steps(2, end) 1;
+}
+
+@keyframes cp-glitch {
+  0%, 100% { text-shadow: none; transform: translateX(0); }
+  25% { text-shadow: -1px 0 var(--cp-red), 1px 0 var(--cp-cyan); transform: translateX(-0.5px); }
+  50% { text-shadow: 1px 0 var(--cp-pink), -1px 0 var(--cp-yellow); transform: translateX(0.5px); }
+  75% { text-shadow: -1px 0 var(--cp-cyan), 1px 0 var(--cp-red); }
+}
+
+/* Extra glitch accents: names, selected channels, unread markers and home icon. */
+#app-mount [class*="username_"] {
+  animation: cp-name-flicker 7s steps(1, end) infinite;
+}
+
+#app-mount [class*="modeSelected_"] {
+  animation: cp-channel-glitch 5.5s steps(1, end) infinite;
+}
+
+#app-mount [class*="unread_"] {
+  animation: cp-unread-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes cp-name-flicker {
+  0%, 91%, 94%, 100% { text-shadow: none; transform: translateX(0); }
+  92% { text-shadow: -2px 0 var(--cp-red), 2px 0 var(--cp-cyan); transform: translateX(-1px); }
+  93% { text-shadow: 2px 0 var(--cp-yellow), -2px 0 var(--cp-pink); transform: translateX(1px); }
+}
+
+@keyframes cp-channel-glitch {
+  0%, 88%, 92%, 100% { clip-path: inset(0); filter: none; }
+  89% { clip-path: inset(2px 0 18px 0); filter: hue-rotate(35deg) brightness(1.3); }
+  90% { clip-path: inset(16px 0 3px 0); transform: translateX(2px); }
+  91% { clip-path: inset(0); transform: translateX(-1px); }
+}
+
+@keyframes cp-unread-pulse {
+  0%, 100% { box-shadow: 0 0 5px var(--cp-red); filter: brightness(1); }
+  50% { box-shadow: 0 0 13px var(--cp-red); filter: brightness(1.35); }
+}
+
+/* ---------- Controls ---------- */
+
+/* Only brand/action buttons are yellow. Neutral voice controls keep their native colors. */
+#app-mount [class*="lookFilled_"][class*="colorBrand_"],
+#app-mount [class*="lookFilled_"][class*="colorGreen_"] {
+  color: var(--cp-ink) !important;
+  background: linear-gradient(135deg, var(--cp-yellow), #8255ff) !important;
+  border: 1px solid rgba(0, 240, 255, 0.5);
+  border-radius: 3px !important;
+  box-shadow: 0 0 12px rgba(255, 62, 200, 0.3);
+  font-weight: 700;
+}
+
+#app-mount [class*="lookFilled_"][class*="colorBrand_"]:hover,
+#app-mount [class*="lookFilled_"][class*="colorGreen_"]:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 0 18px rgba(255, 62, 200, 0.6), 0 0 28px rgba(36, 231, 255, 0.2);
+}
+
+#app-mount [class*="lookFilled_"][class*="colorPrimary_"] {
+  color: var(--interactive-normal) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid var(--cp-muted-line);
+  box-shadow: none;
+}
+
+#app-mount [class*="lookFilled_"][class*="colorPrimary_"]:hover {
+  color: var(--interactive-active) !important;
+  background: rgba(0, 240, 255, 0.12) !important;
+  border-color: rgba(0, 240, 255, 0.35);
+}
+
+/* Voice/video/activity controls: override the yellow inherited from Nocturnal. */
+#app-mount [class*="actionButtons_"] button,
+#app-mount [class*="actionButtons_"] [class*="button_"],
+#app-mount [class*="voiceButtonsContainer_"] button,
+#app-mount [class*="voiceButtonsContainer_"] [class*="button_"] {
+  color: var(--interactive-normal) !important;
+  background: rgba(28, 31, 40, 0.94) !important;
+  border: 1px solid rgba(0, 240, 255, 0.18) !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+#app-mount [class*="actionButtons_"] button:hover,
+#app-mount [class*="actionButtons_"] [class*="button_"]:hover,
+#app-mount [class*="voiceButtonsContainer_"] button:hover,
+#app-mount [class*="voiceButtonsContainer_"] [class*="button_"]:hover {
+  color: var(--cp-cyan) !important;
+  background: rgba(0, 240, 255, 0.12) !important;
+  border-color: rgba(0, 240, 255, 0.45) !important;
+}
+
+#app-mount [class*="colorRed_"] {
+  color: #fff !important;
+  background: linear-gradient(135deg, var(--cp-red), #a8002e) !important;
+}
+
+#app-mount button:focus-visible,
+#app-mount a:focus-visible,
+#app-mount [role="button"]:focus-visible,
+#app-mount input:focus-visible,
+#app-mount textarea:focus-visible {
+  outline: 2px solid var(--cp-cyan) !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.16) !important;
+}
+
+#app-mount [class*="channelTextArea_"]:focus-within {
+  border-color: rgba(0, 240, 255, 0.74) !important;
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.24), inset 0 0 16px rgba(0, 240, 255, 0.035);
+}
+
+#app-mount [class*="textArea_"],
+#app-mount [class*="slateTextArea_"] {
+  caret-color: var(--cp-yellow);
+}
+
+/* ---------- Popouts and cards ---------- */
+
+#app-mount [class*="layerContainer_"] [class*="root_"],
+#app-mount [class*="layerContainer_"] [class*="menu_"],
+#app-mount [class*="layerContainer_"] [class*="popout_"] {
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-radius) !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.62), 0 0 22px rgba(0, 240, 255, 0.11);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+#app-mount [class*="role_"] {
+  border: 1px solid rgba(255, 62, 200, 0.34) !important;
+  border-radius: 3px;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+}
+
+/* ---------- Links and code ---------- */
+
+#app-mount a,
+#app-mount [class*="anchor_"] {
+  color: var(--linkcolor) !important;
+  text-decoration-color: rgba(77, 245, 255, 0.48);
+  text-underline-offset: 2px;
+}
+
+#app-mount a:hover,
+#app-mount [class*="anchor_"]:hover {
+  color: var(--cp-yellow) !important;
+  text-decoration-color: currentColor;
+  text-shadow: 0 0 7px rgba(255, 62, 200, 0.46);
+}
+
+#app-mount pre,
+#app-mount [class*="codeBlock_"] {
+  background: var(--backgroundCode) !important;
+  border: 1px solid rgba(0, 240, 255, 0.28) !important;
+  border-radius: 4px !important;
+  box-shadow: inset 0 0 22px rgba(0, 240, 255, 0.035);
+}
+
+#app-mount code:not(pre code) {
+  color: #7ff8ff !important;
+  background: rgba(0, 240, 255, 0.09) !important;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 3px;
+}
+
+/* ---------- Scrollbars ---------- */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.26);
+}
+
+::-webkit-scrollbar-thumb {
+  min-height: 36px;
+  background: linear-gradient(180deg, var(--cp-yellow), var(--cp-cyan));
+  border: 2px solid rgba(0, 0, 0, 0.56);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff79df, #75f8ff);
+}
+
+/* Respect OS accessibility and save GPU/battery on reduced-motion systems. */
+@media (prefers-reduced-motion: reduce) {
+  #app-mount *,
+  #app-mount *::before,
+  #app-mount *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  #app-mount::before {
+    animation: none !important;
+  }
+
+  body::before {
+    animation: none !important;
+  }
+}
